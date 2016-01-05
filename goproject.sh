@@ -54,7 +54,8 @@ function showWorkspaceName {
 }
 function changeWorkspace {	
 	echo ""
-	read -p "You need to set a GOPATH directory as Go workspace: (default $HOME/Go) " gopath
+	echo "You need to set a GOPATH directory as Go workspace. MUST BE in your ~/ directory"
+	read -p ": (default $HOME/Go) " gopath
 
 	if [[ $gopath == '' ]]; then
 		mkdir -p "$HOME/Go"
@@ -96,7 +97,7 @@ function createNewProject {
 		echo 'package main' > $GOPATH/src/$1/main.go
 		echo ""
 		echo "	Project '$1' created!"
-		echo "	Start editing: $GOPATH/usr/$1/main.go"
+		echo "	Start editing: $GOPATH/src/$1/main.go"
 		echo ""
 	fi
 }
@@ -138,6 +139,17 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE."
 	echo ""
 }
+function runCode {
+	#Get app location
+	bin=${GOPATH/$HOME/}
+	bin=${bin:1}
+	bin="$bin/bin"
+
+	currentDirectory=$(pwd)
+	cd ~
+	./$bin/$1
+	cd $currentDirectory
+}
 
 ##---------------------------------- MAIN CODE
 
@@ -172,6 +184,12 @@ else
 				;;
 			about)
 				showAbout
+				;;
+			compile)
+				go install $2
+				;;
+			run)
+				runCode $2
 				;;
 			*)
 				commandNotFound
