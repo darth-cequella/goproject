@@ -147,29 +147,54 @@ SOFTWARE."
 	echo ""
 }
 function builApplication {
-	#Check if .goproject file already exists
-	FILE="$GOPATH/src/$1/.goproject"
-	if [[ -e "$FILE" ]]; then
+	if [[ $# == 1 ]]; then
+		#Check if .goproject file already exists
+		FILE="$GOPATH/src/$1/.goproject"
+		if [[ -e "$FILE" ]]; then
 
-		#Read the .goproject file
-		for line in $(cat $GOPATH/src/$1/.goproject); do
-			echo "	Building '$line'"
-			go build $line
-		done
+			#Read the .goproject file
+			for line in $(cat $GOPATH/src/$1/.goproject); do
+				echo "	Building '$line'"
+				go build $line
+			done
+		fi
+
+		go install $1
+	else
+		echo ""
+		echo "	Type correctly: 'goproject build <PROJECT>'"
+		echo ""
 	fi
 
-	go install $1
 }
 function runCode {
-	#Get app location
-	bin=${GOPATH/$HOME/}
-	bin=${bin:1}
-	bin="$bin/bin"
+	if [[ $# == 1 ]]; then
+		
+		#Get app location
+		bin=${GOPATH/$HOME/}
+		bin=${bin:1}
+		bin="$bin/bin"
 
-	currentDirectory=$(pwd)
-	cd ~
-	./$bin/$1
-	cd $currentDirectory
+		currentDirectory=$(pwd)
+		cd ~
+		if [[ -e "$bin/$1" ]]; then
+			#Find app
+			./$bin/$1
+		else
+			echo ""
+			echo "	Executable not found. First runs 'goproject build $1' "
+			echo ""
+
+		fi
+		
+		cd $currentDirectory
+
+	else
+		echo ""
+		echo "	Type correctly: 'goproject run <PROJECT>'"
+		echo ""
+
+	fi
 }
 function createModule {
 	if [[ $# != 2 ]]; then #Check correct command to create a new module
