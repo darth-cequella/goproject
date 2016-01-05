@@ -15,10 +15,17 @@ function helpScreen {
 	echo ""
 	echo "	goproject [OPTIONS] VALUES"
 	echo ""
-	echo "	--help 			-h 			Open this page."
-	echo "	--workspace					Show the current workspace directory."
-	echo "	--change-workspace			Change current Workspace."
-	echo "	--reset-workspace			Clear the reference to the Workspace (doesn't affect the directories or files)."
+	echo "	help 			 			Open this page."
+	echo "	workspace					Show the current workspace directory."
+	echo "	change-workspace			Change current Workspace."
+	echo "	reset-workspace				Clear the reference to the Workspace (doesn't affect the directories or files)."
+	echo "	new 						Create a new project"
+	echo "	list-projects				Return the full workspace's projects"
+	echo "	version						Current GoProject version"
+	echo "	about						About GoProject"
+	echo "	build						Compile a project and generate an executable at $GOPATH/bin"
+	echo "	run							Run the, previously builded, application."
+	echo ""
 }
 function checkGoPath {	
 	read -p "You need to set a GOPATH directory as Go workspace: (default $HOME/Go) " gopath
@@ -139,6 +146,20 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE."
 	echo ""
 }
+function builApplication {
+	#Check if .goproject file already exists
+	FILE="$GOPATH/src/$1/.goproject"
+	if [[ -e "$FILE" ]]; then
+
+		#Read the .goproject file
+		for line in $(cat $GOPATH/src/$1/.goproject); do
+			echo "	Building '$line'"
+			go build $line
+		done
+	fi
+
+	go install $1
+}
 function runCode {
 	#Get app location
 	bin=${GOPATH/$HOME/}
@@ -227,7 +248,7 @@ else
 				showAbout
 				;;
 			build)
-				go install $2
+				builApplication $2
 				;;
 			run)
 				runCode $2
