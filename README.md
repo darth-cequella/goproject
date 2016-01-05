@@ -6,7 +6,7 @@ Dependencies:
   
 Install
   - Copy the 'goproject' to your /usr/local/bin directory (must use su permission)
-  cp goproject /usr/local/bin
+  cp goproject.sh /usr/local/bin/goproject
   
   - Set the correct permission to it
   chmod +x /usr/local/bin/goproject
