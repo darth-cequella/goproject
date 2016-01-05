@@ -83,6 +83,20 @@ function resetWorkspace {
 	echo "	Use 'goproject change-workspace' to create a new directory or to set some directory that already exists."
 	echo ""
 }
+function createNewProject {
+	if [[ $# -eq 0 ]]; then
+		echo ""
+		echo "	type correctly: goproject new PROJECT_NAME"
+		echo ""
+	else
+		mkdir -p $GOPATH/src/$1
+		echo 'package main' > $GOPATH/src/$1/main.go
+		echo ""
+		echo "	Project '$1' created!"
+		echo "	Start editing: $GOPATH/usr/$1/main.go"
+		echo ""
+	fi
+}
 
 ##---------------------------------- MAIN CODE
 
@@ -105,6 +119,9 @@ else
 				;;
 			reset-workspace)
 				resetWorkspace
+				;;
+			new)
+				createNewProject $2
 				;;
 			*)
 				commandNotFound
