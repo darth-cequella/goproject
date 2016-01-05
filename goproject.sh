@@ -146,7 +146,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE."
 	echo ""
 }
-function builApplication {
+function buildApplication {
 	if [[ $# == 1 ]]; then
 		#Check if .goproject file already exists
 		FILE="$GOPATH/src/$1/.goproject"
@@ -273,7 +273,7 @@ else
 				showAbout
 				;;
 			build)
-				builApplication $2
+				buildApplication $2
 				;;
 			run)
 				runCode $2
