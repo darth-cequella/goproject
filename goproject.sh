@@ -17,45 +17,7 @@ function helpScreen {
 	echo "	--change-workspace			Change current Workspace."
 	echo "	--reset-workspace			Clear the reference to the Workspace (doesn't affect the directories or files)."
 }
-function checkGoPath {
-	if [[ -z $GOPATH ]]; then
-		
-		read -p "You need to set a GOPATH directory as Go workspace: (default $HOME/GoWorkspace) " gopath
-
-		if [[ $gopath == '' ]]; then
-			mkdir -p "$HOME/GoWorkspace"
-			mkdir -p "$HOME/GoWorkspace/src"
-			mkdir -p "$HOME/GoWorkspace/bin"
-			mkdir -p "$HOME/GoWorkspace/pkg"
-			export GOPATH=$HOME/GoWorkspace
-			echo ""
-			echo "Workspace sucessfullly created!"
-			echo "Check under $HOME/GoWorkspace"
-			echo ""
-		else
-			mkdir -p "$HOME/$gopath"
-			mkdir -p "$HOME/$gopath/src"
-			mkdir -p "$HOME/$gopath/bin"
-			mkdir -p "$HOME/$gopath/pkg"
-			export GOPATH=$HOME/$gopath
-			echo ""
-			echo "Workspace sucessfullly created!"
-			echo "Check under $HOME/$gopath"
-			echo ""
-		fi
-
-	fi
-}
-function showWorkspaceName {
-	if [[ -z $GOPATH ]]; then
-		echo "Yout current workspace is at: $GOPATH"
-		echo "Use '' if you like to change the current workspace directory,"
-		echo "or '' if you like to remove the reference to the workspace directory (doesn't affect directory/files)"
-	else
-		checkGoPath
-	fi
-}
-function changeWorkspace {	
+function checkGoPath {	
 	read -p "You need to set a GOPATH directory as Go workspace: (default $HOME/GoWorkspace) " gopath
 
 	if [[ $gopath == '' ]]; then
@@ -65,7 +27,7 @@ function changeWorkspace {
 		mkdir -p "$HOME/GoWorkspace/pkg"
 		export GOPATH=$HOME/GoWorkspace
 		echo ""
-		echo "Workspace sucessfullly changed!"
+		echo "Workspace sucessfullly created!"
 		echo "Check under $HOME/GoWorkspace"
 		echo ""
 	else
@@ -75,10 +37,51 @@ function changeWorkspace {
 		mkdir -p "$HOME/$gopath/pkg"
 		export GOPATH=$HOME/$gopath
 		echo ""
-		echo "Workspace sucessfullly changed!"
+		echo "Workspace sucessfullly created!"
 		echo "Check under $HOME/$gopath"
 		echo ""
 	fi
+}
+function showWorkspaceName {
+	echo ""
+	echo "	Your current workspace is at: $GOPATH"
+	echo "	Use 'goproject change-workspace' if you like to change the current workspace directory,"
+	echo "	or 'goproject reset-workspace' if you like to remove the reference to the workspace directory (doesn't affect directory/files)"
+	echo ""
+}
+function changeWorkspace {	
+	echo ""
+	read -p "You need to set a GOPATH directory as Go workspace: (default $HOME/GoWorkspace) " gopath
+
+	if [[ $gopath == '' ]]; then
+		mkdir -p "$HOME/GoWorkspace"
+		mkdir -p "$HOME/GoWorkspace/src"
+		mkdir -p "$HOME/GoWorkspace/bin"
+		mkdir -p "$HOME/GoWorkspace/pkg"
+		export GOPATH=$HOME/GoWorkspace
+		echo ""
+		echo "	Workspace sucessfullly changed!"
+		echo "	Check under $HOME/GoWorkspace"
+		echo ""
+	else
+		mkdir -p "$HOME/$gopath"
+		mkdir -p "$HOME/$gopath/src"
+		mkdir -p "$HOME/$gopath/bin"
+		mkdir -p "$HOME/$gopath/pkg"
+		export GOPATH=$HOME/$gopath
+		echo ""
+		echo "	Workspace sucessfullly changed!"
+		echo "	Check under $HOME/$gopath"
+		echo ""
+	fi
+}
+function resetWorkspace {	
+	export GOPATH=
+	echo ""
+	echo "	Now you don't have any workspace. "
+	echo "	If you want to develop in Go you will need a workspace."
+	echo "	Use 'goproject change-workspace' to create a new directory or to set some directory that already exists."
+	echo ""
 }
 
 ##---------------------------------- MAIN CODE
@@ -89,6 +92,25 @@ if [[ $# -eq 0 ]]; then
 
 else
 
-	checkGoPath
+	if [[ -z $GOPATH ]]; then
+		checkGoPath
+	else
+
+		case $1 in
+			workspace )
+				showWorkspaceName
+				;;
+			change-workspace)
+				changeWorkspace
+				;;
+			reset-workspace)
+				resetWorkspace
+				;;
+			*)
+				commandNotFound
+				;;
+		esac
+
+	fi
 
 fi
