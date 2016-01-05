@@ -5,10 +5,11 @@ Dependencies:
   goproject uses go (obviously) and bash terminal.
   
 Install
-  - Copy the 'goproject' to your /usr/local/bin directory (must use su permission)
-  cp goproject.sh /usr/local/bin/goproject
+  - Copy the 'goproject' to your /usr/local/bin directory (must use su permission)</br>
+  <b>cp goproject.sh /usr/local/bin/goproject</b>
   
-  - Set the correct permission to it
-  chmod +x /usr/local/bin/goproject
+  - Set the correct permission to it<br>
+  <b>chmod +x /usr/local/bin/goproject</b>
   
-  - Now use 'goproject workspace' to see if GOPATH environmant variable is available.
+  - Now use 'goproject workspace' to see if GOPATH environmant variable is available.</br>
+  <b>goproject workspace</b>
