@@ -150,6 +150,47 @@ function runCode {
 	./$bin/$1
 	cd $currentDirectory
 }
+function createModule {
+	if [[ $# != 2 ]]; then #Check correct command to create a new module
+		echo ""
+		echo "	Type correctly: 'goproject create-module <PROJECT_NAME> <MODULE_NAME>'"
+		echo ""
+	else
+
+		#Create repository and module with start package setted
+		mkdir -p $GOPATH/src/$1/$2
+		echo "package $2" > $GOPATH/src/$1/$2/$2.go
+
+		#Check if .goproject file already exists
+		FILE="$GOPATH/src/$1/.goproject"
+		if [[ -e "$FILE" ]]; then
+
+			#Prevent duplied referente in .goproject
+			export LISTED="FALSE"
+			for line in $(cat $GOPATH/src/$1/.goproject); do
+				if [[ $line == "$1/$2" ]]; then
+					export LISTED="TRUE"
+					break
+				fi
+			done
+
+			#If module not listed, list it!
+			if [[ $LISTED == "FALSE" ]]; then
+				echo "$1/$2" >> $GOPATH/src/$1/.goproject
+			fi
+
+			unset LISTED
+		else
+			#.goproject file don't exists. Create it!
+			echo "$1/$2" > $GOPATH/src/$1/.goproject
+		fi
+
+		echo ""
+		echo "	Module '$2' created. Start editing in: $GOPATH/src/$1/$2/$2.go"
+		echo ""
+
+	fi
+}
 
 ##---------------------------------- MAIN CODE
 
@@ -190,6 +231,9 @@ else
 				;;
 			run)
 				runCode $2
+				;;
+			create-module)
+				createModule $2 $3
 				;;
 			*)
 				commandNotFound
