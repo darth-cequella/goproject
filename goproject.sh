@@ -185,7 +185,7 @@ else
 			about)
 				showAbout
 				;;
-			compile)
+			build)
 				go install $2
 				;;
 			run)
