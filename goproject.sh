@@ -18,17 +18,17 @@ function helpScreen {
 	echo "	--reset-workspace			Clear the reference to the Workspace (doesn't affect the directories or files)."
 }
 function checkGoPath {	
-	read -p "You need to set a GOPATH directory as Go workspace: (default $HOME/GoWorkspace) " gopath
+	read -p "You need to set a GOPATH directory as Go workspace: (default $HOME/Go) " gopath
 
 	if [[ $gopath == '' ]]; then
-		mkdir -p "$HOME/GoWorkspace"
-		mkdir -p "$HOME/GoWorkspace/src"
-		mkdir -p "$HOME/GoWorkspace/bin"
-		mkdir -p "$HOME/GoWorkspace/pkg"
-		export GOPATH=$HOME/GoWorkspace
+		mkdir -p "$HOME/Go"
+		mkdir -p "$HOME/Go/src"
+		mkdir -p "$HOME/Go/bin"
+		mkdir -p "$HOME/Go/pkg"
+		export GOPATH=$HOME/Go
 		echo ""
 		echo "Workspace sucessfullly created!"
-		echo "Check under $HOME/GoWorkspace"
+		echo "Check under $HOME/Go"
 		echo ""
 	else
 		mkdir -p "$HOME/$gopath"
@@ -51,17 +51,17 @@ function showWorkspaceName {
 }
 function changeWorkspace {	
 	echo ""
-	read -p "You need to set a GOPATH directory as Go workspace: (default $HOME/GoWorkspace) " gopath
+	read -p "You need to set a GOPATH directory as Go workspace: (default $HOME/Go) " gopath
 
 	if [[ $gopath == '' ]]; then
-		mkdir -p "$HOME/GoWorkspace"
-		mkdir -p "$HOME/GoWorkspace/src"
-		mkdir -p "$HOME/GoWorkspace/bin"
-		mkdir -p "$HOME/GoWorkspace/pkg"
-		export GOPATH=$HOME/GoWorkspace
+		mkdir -p "$HOME/Go"
+		mkdir -p "$HOME/Go/src"
+		mkdir -p "$HOME/Go/bin"
+		mkdir -p "$HOME/Go/pkg"
+		export GOPATH=$HOME/Go
 		echo ""
 		echo "	Workspace sucessfullly changed!"
-		echo "	Check under $HOME/GoWorkspace"
+		echo "	Check under $HOME/Go"
 		echo ""
 	else
 		mkdir -p "$HOME/$gopath"
