@@ -1,12 +1,15 @@
 #!/bin/bash
 
+VERSION="GoProject, version 0.1.0-BETA"
+DEVELOPER="Pedro \"Darth Çeqüella\" de Cavalcante"
+
 function commandNotFound {
 	echo ""
 	echo "	Unavailable command. If you need help read the 'goproject --help'."
 	echo ""
 }
 function helpScreen {
-	echo "GoProject, versão 1.0.0-RC1"
+	echo $VERSION
 	echo "This commands of GoProject was defined internally. Type 'goproject help' to see this page."
 	echo "Type 'goproject help FUNCTION' to understand more about FUNCTION."
 	echo ""
@@ -86,7 +89,7 @@ function resetWorkspace {
 function createNewProject {
 	if [[ $# -eq 0 ]]; then
 		echo ""
-		echo "	type correctly: goproject new PROJECT_NAME"
+		echo "	Type correctly: goproject new PROJECT_NAME"
 		echo ""
 	else
 		mkdir -p $GOPATH/src/$1
@@ -96,6 +99,44 @@ function createNewProject {
 		echo "	Start editing: $GOPATH/usr/$1/main.go"
 		echo ""
 	fi
+}
+function listProjects {
+	echo ""
+	echo "	Projects in this workspace:"
+	ls --color=never $GOPATH/src/
+	echo ""
+}
+function showVersion {
+	echo ""
+	echo "	$VERSION"
+	echo ""
+}
+function showAbout {
+	echo ""
+	echo "	$VERSION"
+	echo "	Developed by: $DEVELOPER"
+	echo "	"
+	echo "	The MIT License (MIT)"
+	echo "	Copyright (c) 2016 $DEVELOPER
+
+	Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the \"Software\"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+	The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+	THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE."
+	echo ""
 }
 
 ##---------------------------------- MAIN CODE
@@ -122,6 +163,15 @@ else
 				;;
 			new)
 				createNewProject $2
+				;;
+			list-projects)
+				listProjects
+				;;
+			version)
+				showVersion
+				;;
+			about)
+				showAbout
 				;;
 			*)
 				commandNotFound
