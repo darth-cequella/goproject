@@ -35,7 +35,7 @@ const (
 )
 
 //-----------------------------------------------------------------------------------------------------------
-
+//HELP
 func commandNotFound() {
 	fmt.Println("\n\tUnavailable command. If you need help read the 'goproject --help'.")
 }
@@ -56,6 +56,7 @@ func genericHelp() {
 	fmt.Println("\tbuild\t\t\t\tCompile a project and generate an executable at $GOPATH/bin")
 	fmt.Println("\trun\t\t\t\tRun the, previously builded, application.\n")
 }
+//INFORMATION
 func showVersion() {
 	fmt.Println()
 	fmt.Println("\t",VERSION)
@@ -82,6 +83,33 @@ func showAbout() {
 				"OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE"+
 				"SOFTWARE.")
 }
+//WORKSPACE
+func hasWorkspace() bool {
+	gopath := os.Getenv("GOPATH")
+	return gopath!=""
+}
+func setWorkspace() {
+
+}
+//MENU
+func checkFunction(args []string) {
+	function:=args[0]; //Get function accessed by user
+
+	switch function{
+	case "help":
+		if len(args) == 1 {
+			genericHelp()
+		} else {
+			//specific help
+		}
+	case "about":
+		showAbout()
+	case "version":
+		showVersion()
+	default:
+		commandNotFound()
+	}
+}
 
 func main() {
 	args := os.Args[1:]
@@ -89,21 +117,11 @@ func main() {
 	if len(args) == 0 { // If user not set a function
 		genericHelp()
 	} else {
-
-		function:=args[0]; //Function accessed by user
-		switch function{
-		case "help":
-			if len(args) == 1 {
-				genericHelp()
-			} else {
-				//specific help
-			}
-		case "about":
-			showAbout()
-		case "version":
-			showVersion()
-		default:
-			commandNotFound()
+		//First, check if exists a workspace. If not, make it!
+		if !hasWorkspace() {
+			setWorkspace()
+		} else {
+			checkFunction(args)
 		}
 	}
 }
