@@ -34,12 +34,12 @@ const (
 	DEVELOPER	="Pedro \"Darth Çeqüella\" de Cavalcante"
 )
 
-
+//-----------------------------------------------------------------------------------------------------------
 
 func commandNotFound() {
 	fmt.Println("\n\tUnavailable command. If you need help read the 'goproject --help'.")
 }
-func help() {
+func genericHelp() {
 	fmt.Println()
 	fmt.Println(VERSION)
 	fmt.Println("This commands of GoProject was defined internally. Type 'goproject help' to see this page.")
@@ -62,24 +62,24 @@ func showVersion() {
 }
 func showAbout() {
 	fmt.Println()
-	fmt.Println("\t",VERSION)
-	fmt.Println("\tDeveloped by: ",DEVELOPER)
+	fmt.Println("\t"+VERSION)
+	fmt.Println("\tDeveloped by: "+DEVELOPER)
 	fmt.Println("\tThe MIT License (MIT)")
-	fmt.Println("\tCopyright (c) 2016 $DEVELOPER\n\n",
-				"\tPermission is hereby granted, free of charge, to any person obtaining a copy",
-				"of this software and associated documentation files (the \"Software\"), to deal",
-				"in the Software without restriction, including without limitation the rights",
-				"to use, copy, modify, merge, publish, distribute, sublicense, and/or sell",
-				"copies of the Software, and to permit persons to whom the Software is",
-				"furnished to do so, subject to the following conditions:\n\n",
-				"\tThe above copyright notice and this permission notice shall be included in all",
-				"copies or substantial portions of the Software.\n\n",
-				"\tTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR",
-				"IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,",
-				"FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE",
-				"AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER",
-				"LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,",
-				"OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE",
+	fmt.Println("\tCopyright (c) 2016 "+DEVELOPER+"\n\n"+
+				"\tPermission is hereby granted, free of charge, to any person obtaining a copy"+
+				"of this software and associated documentation files (the \"Software\"), to deal"+
+				"in the Software without restriction, including without limitation the rights"+
+				"to use, copy, modify, merge, publish, distribute, sublicense, and/or sell"+
+				"copies of the Software, and to permit persons to whom the Software is"+
+				"furnished to do so, subject to the following conditions:\n\n"+
+				"\tThe above copyright notice and this permission notice shall be included in all"+
+				"copies or substantial portions of the Software.\n\n"+
+				"\tTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR"+
+				"IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,"+
+				"FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE"+
+				"AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER"+
+				"LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,"+
+				"OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE"+
 				"SOFTWARE.")
 }
 
@@ -87,12 +87,17 @@ func main() {
 	args := os.Args[1:]
 
 	if len(args) == 0 { // If user not set a function
-		help()
+		genericHelp()
 	} else {
 
-		switch function:=args[0]; function{
+		function:=args[0]; //Function accessed by user
+		switch function{
 		case "help":
-			help()
+			if len(args) == 1 {
+				genericHelp()
+			} else {
+				//specific help
+			}
 		case "about":
 			showAbout()
 		case "version":
