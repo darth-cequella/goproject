@@ -27,6 +27,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"bufio"
 )
 
 const (
@@ -37,7 +38,7 @@ const (
 //-----------------------------------------------------------------------------------------------------------
 //HELP
 func commandNotFound() {
-	fmt.Println("\n\tUnavailable command. If you need help read the 'goproject --help'.")
+	fmt.Println("\n\tUnavailable command. If you need help read the 'goproject --help'.\n")
 }
 func genericHelp() {
 	fmt.Println()
@@ -54,7 +55,7 @@ func genericHelp() {
 	fmt.Println("\tversion\t\t\t\tCurrent GoProject version")
 	fmt.Println("\tabout\t\t\t\tAbout GoProject")
 	fmt.Println("\tbuild\t\t\t\tCompile a project and generate an executable at $GOPATH/bin")
-	fmt.Println("\trun\t\t\t\tRun the, previously builded, application.\n")
+	fmt.Println("\trun\t\t\t\tRun the, previously builded, application.\n\n")
 }
 //INFORMATION
 func showVersion() {
@@ -81,15 +82,52 @@ func showAbout() {
 				"AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER"+
 				"LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,"+
 				"OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE"+
-				"SOFTWARE.")
+				"SOFTWARE.\n")
 }
 //WORKSPACE
 func hasWorkspace() bool {
 	gopath := os.Getenv("GOPATH")
 	return gopath!=""
 }
+func showWorkspace() {
+	if hasWorkspace(){
+		gopath := os.Getenv("GOPATH")
+		fmt.Printf("\n\tYou current workspace is '%s'\n", gopath)
+		fmt.Println("\tBut you can change using 'goproject set-workspace' or clearing using 'goproject clear-workspace'.\n")
+	} else {
+		fmt.Println("\n\tYou, already, don't have a workspace")
+		fmt.Println("\tBut you can set one using 'goproject set-workspace'.\n")
+	}
+}
 func setWorkspace() {
+	home := os.Getenv("HOME")
+	reader := bufio.NewReader(os.Stdin) //Start a reader
+	
+	fmt.Printf("You need to set a directory to use as Go workspace:\n(empty = %s/Go) ", home)
+	gopath, err := reader.ReadString('\n')
 
+	if err != nil{
+		fmt.Println(err)
+	} else {
+		gopath = gopath[:len(gopath)-1] //Remove final breakline
+
+		if gopath == "" {
+			gopath = home+"/Go"
+		} else {
+			gopath = home+"/"+gopath
+		}
+
+		//Create workspace structu
+		if err:=os.MkdirAll(gopath, 0775); err!=nil{ fmt.Println(err) }
+		if err:=os.MkdirAll(gopath+"/src", 0775); err!=nil{ fmt.Println(err) }
+		if err:=os.MkdirAll(gopath+"/bin", 0775); err!=nil{ fmt.Println(err) }
+		if err:=os.MkdirAll(gopath+"/pkg", 0775); err!=nil{ fmt.Println(err) }
+		
+		if err:=os.Setenv("GOPATH", gopath); err!=nil{ fmt.Println(err) } //Set environment variable
+		
+		fmt.Println("\n\tWorkspace sucessfullly created!")
+		fmt.Printf("\tCheck under %s\n\n", gopath)
+	}
 }
 //MENU
 func checkFunction(args []string) {
@@ -106,6 +144,10 @@ func checkFunction(args []string) {
 		showAbout()
 	case "version":
 		showVersion()
+	case "workspace":
+		showWorkspace()
+	case "set-workspace":
+		setWorkspace()
 	default:
 		commandNotFound()
 	}
