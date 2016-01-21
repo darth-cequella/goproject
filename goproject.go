@@ -54,8 +54,9 @@ func genericHelp() {
 	fmt.Println("\tlist-projects\t\t\tReturn the full workspace's projects")
 	fmt.Println("\tversion\t\t\t\tCurrent GoProject version")
 	fmt.Println("\tabout\t\t\t\tAbout GoProject")
-	fmt.Println("\tbuild\t\t\t\tCompile a project and generate an executable at $GOPATH/bin")
+	fmt.Println("\tbuild\t\t\t\tCompile a project and generate an executable at WORKSPACE/bin")
 	fmt.Println("\trun\t\t\t\tRun the, previously builded, application.\n\n")
+	fmt.Println("\tproject\t\t\t\tCreate/Remove a project.\n\n")
 }
 //INFORMATION
 func showVersion() {
@@ -128,6 +129,27 @@ func setWorkspace() {
 		fmt.Println("\n\tWorkspace sucessfullly created!")
 		fmt.Printf("\tCheck under %s\n\n", gopath)
 	}
+}
+//PROJECT
+func listProjects() {
+	
+}
+func newProject(project string) {
+	gopath := os.Getenv("GOPATH")
+	
+	if gopath=="" && project!=""{
+		if err:=os.MkdirAll(gopath+"/src/"+project, 0775); err!=nil{ fmt.Println(err) }
+		fmt.Printf("\n\tProject created. Open it on '%s\\src\\%s'\n", gopath, project)
+	} else {
+		if gopath=="" {
+			fmt.Println("\n\tYou don't have defined your workspace yet. \n\tTry 'goproject worspace' for more information\n")
+		} else if project=="" {
+			fmt.Println("\n\tDefine the name of the project. \n\tTry again 'goproject project new NAME'\n")
+		}
+	}
+}
+func removeProject() {
+	
 }
 //MENU
 func checkFunction(args []string) {
