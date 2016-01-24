@@ -30,6 +30,7 @@ import (
 	"bufio"
 	"log"
 	"strings"
+	"io/ioutil"
 )
 
 const (
@@ -102,46 +103,6 @@ func showWorkspace() {
 		fmt.Println("\tBut you can set one using 'goproject set-workspace'.\n")
 	}
 }
-func setWorkspace() {
-	home := os.Getenv("HOME")
-	reader := bufio.NewReader(os.Stdin) //Start a reader
-	
-	fmt.Printf("You need to set a directory to use as Go workspace:\n(empty = %s/Go) ", home)
-	gopath, err := reader.ReadString('\n')
-
-	if err != nil{
-		log.Fatal(err)
-	} else {
-		gopath = gopath[:len(gopath)-1] //Remove final breakline
-
-		if gopath == "" {
-			gopath = home+"/Go"
-		} else {
-			gopath = home+"/"+gopath
-		}
-
-		//Create workspace structure
-		if err:=os.MkdirAll(gopath, 0775); err!=nil{ 
-			log.Fatal(err) 
-		}
-		if err:=os.MkdirAll(gopath+"/src", 0775); err!=nil{ 
-			log.Fatal(err) 
-		}
-		if err:=os.MkdirAll(gopath+"/bin", 0775); err!=nil{ 
-			log.Fatal(err) 
-		}
-		if err:=os.MkdirAll(gopath+"/pkg", 0775); err!=nil{ 
-			log.Fatal(err) 
-		}
-		
-		if err:=os.Setenv("GOPATH", gopath); err!=nil{ 
-			log.Fatal(err) //Set environment variable
-		} 
-		
-		fmt.Println("\n\tWorkspace sucessfullly created!")
-		fmt.Printf("\tCheck under %s\n\n", gopath)
-	}
-}
 func setBashrc(gopath string) {
 	home := os.Getenv("HOME")
 	/*
@@ -149,59 +110,43 @@ func setBashrc(gopath string) {
 	 * This makes the environment variable persistent.
 	 */
 	bashAddress := home+"/.bashrc"
-	file, err := os.Open(bashAddress)
+	file, err := ioutil.ReadFile(bashAddress)
 	
 	if err != nil {
-		log.Fatal(err) //If file not found, print error
+		log.Fatalln(err) //If file not found, print error
 	}
 	
-	reader := bufio.NewReader(file) //Create a reader for .bashrc file
-	lineByte, _, err := reader.ReadLine() //Read first line
-	if err != nil{
-		log.Fatal(err) //if some error occurs, print error
-	}
+	bashrc := strings.Split(string(file), "\n")
 	
-	hasGopath := false
-	for lineByte != nil { //Read line-by-line until lineByte comes nil (EOF)
-		line := string(lineByte) //Convert from byte array to string
-		hasGopath = strings.HasPrefix(line, "export GOPATH=")//Check the existence of a GOPATH export
-		if hasGopath { //If Gopath is defined, breaks the lace
+	addGopath := true
+	for i, line := range bashrc {
+		if strings.HasPrefix(line, "export GOPATH") {
+			fmt.Println(gopath)
+			bashrc[i] = "export GOPATH="+gopath
+			addGopath = false
 			break
 		}
-		lineByte, _, _ = reader.ReadLine() //else, reads next line
 	}
 	
-	//If has a Gopath export, change it. Else, add it.
-	if hasGopath {
-		gopath := string(lineByte) //Convert byte array to string
-		
-		var envVar string //Create an empty string to store a POSSIBLE environment variable
-		if strings.Contains(gopath, "$"){
-			/* If exists, remove "export GOPATH=$" and everything after the first '/'
-			It will isolate the $VAR name */
-			envVar = gopath[15:strings.Index(gopath, "/")]
-		}
-		
-		var GOPATH string
-		if envVar == "" {
-			GOPATH = gopath
-		} else {
-			env := os.Getenv(envVar) //Get user directory path
-			GOPATH = env + gopath[strings.Index(gopath, "/"):]
-		}
-		fmt.Printf("\n\tYour current worspace is defined at: \n\t\t%s\n", GOPATH)
-	} else {
+	if addGopath {
+		bashrc = append(bashrc, "# Go Envinronment variable for GOPATH")
+		bashrc = append(bashrc, "export GOPATH="+gopath)
+	}
+	output := strings.Join(bashrc, "\n")
+	err = ioutil.WriteFile(bashAddress, []byte(output), 0644)
+	if err != nil{
+		log.Fatalln(err)
 	}
 } 
-func setWorkspace2() {
+func setWorkspace() {
 	home := os.Getenv("HOME")
 	reader := bufio.NewReader(os.Stdin) //Start a reader
 	
-	fmt.Printf("You need to set a directory to use as Go workspace:\n(empty = %s/Go) ", home)
+	fmt.Printf("\nYou need to set a directory to use as Go workspace:\n(empty = %s/Go) ", home)
 	gopath, err := reader.ReadString('\n')
 
 	if err != nil{
-		log.Fatal(err)
+		log.Fatalln(err)
 	} else {
 		gopath = gopath[:len(gopath)-1] //Remove final breakline
 
@@ -213,20 +158,20 @@ func setWorkspace2() {
 
 		//Create workspace structure
 		if err:=os.MkdirAll(gopath, 0775); err!=nil{ 
-			log.Fatal(err) 
+			log.Fatalln(err) 
 		}
 		if err:=os.MkdirAll(gopath+"/src", 0775); err!=nil{ 
-			log.Fatal(err) 
+			log.Fatalln(err) 
 		}
 		if err:=os.MkdirAll(gopath+"/bin", 0775); err!=nil{ 
-			log.Fatal(err) 
+			log.Fatalln(err) 
 		}
 		if err:=os.MkdirAll(gopath+"/pkg", 0775); err!=nil{ 
-			log.Fatal(err) 
+			log.Fatalln(err) 
 		}
 		
 		if err:=os.Setenv("GOPATH", gopath); err!=nil{ 
-			log.Fatal(err) //Seting environment variable
+			log.Fatalln(err) //Seting environment variable
 		} 
 		setBashrc(gopath)
 		
@@ -243,7 +188,7 @@ func newProject(project string) {
 	
 	if gopath=="" && project!=""{
 		if err:=os.MkdirAll(gopath+"/src/"+project, 0775); err!=nil{ 
-			log.Fatal(err) 
+			log.Fatalln(err) 
 		}
 		fmt.Printf("\n\tProject created. Open it on '%s\\src\\%s'\n", gopath, project)
 	} else {
@@ -276,8 +221,6 @@ func checkFunction(args []string) {
 		showWorkspace()
 	case "set-workspace":
 		setWorkspace()
-	case "test":
-		setWorkspace2()
 	default:
 		commandNotFound()
 	}
